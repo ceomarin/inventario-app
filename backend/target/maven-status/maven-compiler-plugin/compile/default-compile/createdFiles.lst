@@ -1,9 +1,0 @@
-com/inventario/inventario/models/ProductoModel.class
-com/inventario/inventario/controllers/GuiaController.class
-com/inventario/inventario/config/WebConfig.class
-com/inventario/inventario/services/ProductoService.class
-com/inventario/inventario/InventarioApplication.class
-com/inventario/inventario/repositories/ProductoRepository.class
-com/inventario/inventario/repositories/GuiaRepository.class
-com/inventario/inventario/services/GuiaService.class
-com/inventario/inventario/controllers/ProductoController.class

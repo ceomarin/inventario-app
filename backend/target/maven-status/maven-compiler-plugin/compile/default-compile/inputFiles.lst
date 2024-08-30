@@ -1,9 +1,0 @@
-/home/pipecm/Development/devops-tdpc/inventario-app/backend/src/main/java/com/inventario/inventario/InventarioApplication.java
-/home/pipecm/Development/devops-tdpc/inventario-app/backend/src/main/java/com/inventario/inventario/config/WebConfig.java
-/home/pipecm/Development/devops-tdpc/inventario-app/backend/src/main/java/com/inventario/inventario/controllers/GuiaController.java
-/home/pipecm/Development/devops-tdpc/inventario-app/backend/src/main/java/com/inventario/inventario/controllers/ProductoController.java
-/home/pipecm/Development/devops-tdpc/inventario-app/backend/src/main/java/com/inventario/inventario/models/ProductoModel.java
-/home/pipecm/Development/devops-tdpc/inventario-app/backend/src/main/java/com/inventario/inventario/repositories/GuiaRepository.java
-/home/pipecm/Development/devops-tdpc/inventario-app/backend/src/main/java/com/inventario/inventario/repositories/ProductoRepository.java
-/home/pipecm/Development/devops-tdpc/inventario-app/backend/src/main/java/com/inventario/inventario/services/GuiaService.java
-/home/pipecm/Development/devops-tdpc/inventario-app/backend/src/main/java/com/inventario/inventario/services/ProductoService.java

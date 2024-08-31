@@ -8,50 +8,57 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.FileInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.List;
+import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class BaseFunctionalTest {
 
-    private static final String SELENIUM_SERVER_URL = "http://localhost:4444";
     private static final String CHROME_BROWSER_NAME = "chrome";
     private static final String FIREFOX_BROWSER_NAME = "firefox";
     private static final String NOT_IMPLEMENTED_EXCEPTION_MSG = "Not implemented yet";
-
-    protected static final String INVENTARIO_FRONTEND_URL = "http://localhost:3000";
-    protected static final String NEW_PRODUCT_NAME = "Oster coffee maker";
-    protected static final String NEW_PRODUCT_DESCRIPTION = "Cafetera de filtro";
-    protected static final String NEW_PRODUCT_STOCK = "15";
-    protected static final String UPDATED_PRODUCT_NAME = "DeLonghi coffee maker";
-    protected static final String UPDATED_PRODUCT_DESCRIPTION = "Cafetera espresso";
-    protected static final String UPDATED_PRODUCT_STOCK = "10";
-    protected static final String NEW_PRODUCT_CREATED_OK_MSG = "Producto creado exitosamente";
-    protected static final String PRODUCT_EDITED_OK_MSG = "Producto editado exitosamente";
-    protected static final String PRODUCT_DELETED_OK_MSG = "Producto borrado exitosamente";
-    protected static final String BUTTON_OPEN_MODAL_ID = "btn-open-modal";
-    protected static final String MODAL_PRODUCTS_ID = "modalProducts";
-    protected static final String FIELD_NOMBRE_ID = "nombre";
-    protected static final String FIELD_DESCRIPCION_ID = "descripcion";
-    protected static final String FIELD_STOCK_ID = "stock";
-    protected static final String BUTTON_SAVE_MODAL_ID = "btn-save-modal";
-    protected static final String CONFIRMATION_MESSAGE_XPATH = "/html/body/div[2]";
-    protected static final String CONFIRMATION_MESSAGE_TITLE_ID = "swal2-title";
-    protected static final String BUTTON_MODAL_OK_XPATH = "/html/body/div[2]/div/div[6]/button[1]";
-    protected static final String PRODUCTS_TABLE_LAST_ROW_XPATH = "//*[@id=\"root\"]/div/div[1]/div[2]/div/div/table/tbody/tr[last()]/td[position()>1]";
-    protected static final String BUTTON_EDIT_PRODUCT_XPATH = "//*[@id=\"root\"]/div/div[1]/div[2]/div/div/table/tbody/tr[last()]/td[last()]/button[1]";
-    protected static final String BUTTON_DELETE_PRODUCT_XPATH = "//*[@id=\"root\"]/div/div[1]/div[2]/div/div/table/tbody/tr[last()]/td[last()]/button[2]";
-    protected static final String MODAL_DELETE_PRODUCT_XPATH = "/html/body/div[2]/div";
-    protected static final String BUTTON_CONFIRM_DELETE_XPATH = "/html/body/div[2]/div/div[6]/button[1]";
+    private static final String NEW_PRODUCT_NAME = "Oster coffee maker";
+    private static final String NEW_PRODUCT_DESCRIPTION = "Cafetera de filtro";
+    private static final String NEW_PRODUCT_STOCK = "15";
+    private static final String UPDATED_PRODUCT_NAME = "DeLonghi coffee maker";
+    private static final String UPDATED_PRODUCT_DESCRIPTION = "Cafetera espresso";
+    private static final String UPDATED_PRODUCT_STOCK = "10";
+    private static final String NEW_PRODUCT_CREATED_OK_MSG = "Producto creado exitosamente";
+    private static final String PRODUCT_EDITED_OK_MSG = "Producto editado exitosamente";
+    private static final String PRODUCT_DELETED_OK_MSG = "Producto borrado exitosamente";
+    private static final String BUTTON_OPEN_MODAL_ID = "btn-open-modal";
+    private static final String MODAL_PRODUCTS_ID = "modalProducts";
+    private static final String FIELD_NOMBRE_ID = "nombre";
+    private static final String FIELD_DESCRIPCION_ID = "descripcion";
+    private static final String FIELD_STOCK_ID = "stock";
+    private static final String BUTTON_SAVE_MODAL_ID = "btn-save-modal";
+    private static final String CONFIRMATION_MESSAGE_XPATH = "/html/body/div[2]";
+    private static final String CONFIRMATION_MESSAGE_TITLE_ID = "swal2-title";
+    private static final String BUTTON_MODAL_OK_XPATH = "/html/body/div[2]/div/div[6]/button[1]";
+    private static final String PRODUCTS_TABLE_LAST_ROW_XPATH = "//*[@id=\"root\"]/div/div[1]/div[2]/div/div/table/tbody/tr[last()]/td[position()>1]";
+    private static final String BUTTON_EDIT_PRODUCT_XPATH = "//*[@id=\"root\"]/div/div[1]/div[2]/div/div/table/tbody/tr[last()]/td[last()]/button[1]";
+    private static final String BUTTON_DELETE_PRODUCT_XPATH = "//*[@id=\"root\"]/div/div[1]/div[2]/div/div/table/tbody/tr[last()]/td[last()]/button[2]";
+    private static final String MODAL_DELETE_PRODUCT_XPATH = "/html/body/div[2]/div";
+    private static final String BUTTON_CONFIRM_DELETE_XPATH = "/html/body/div[2]/div/div[6]/button[1]";
+    private static final String PROPERTIES_FILE_PATH = "src/test/resources/application.properties";
+    private static final String SELENIUM_SERVER_PROPERTY_KEY = "selenium.server.url";
+    private static final String INVENTARIO_FRONTEND_PROPERTY_KEY = "inventario.frontend.url";
+    private static final String DEFAULT_SELENIUM_SERVER_URL = "http://localhost:4444";
+    private static final String DEFAULT_INVENTARIO_FRONTEND_URL = "http://localhost:3000";
 
     protected static final int WAIT_DEFAULT_DURATION_IN_SECONDS = 40;
     protected static final int WAITING_TIME_AFTER_SUBMIT_IN_SECONDS = 5;
 
-    protected WebDriver driver;
+    private final Properties properties = new Properties();
+    private final String seleniumServerUrl = getProperty(SELENIUM_SERVER_PROPERTY_KEY, DEFAULT_SELENIUM_SERVER_URL);
+    private final String inventarioFrontendUrl = getProperty(INVENTARIO_FRONTEND_PROPERTY_KEY, DEFAULT_INVENTARIO_FRONTEND_URL);
 
+    protected WebDriver driver;
     protected WebDriverWait wait;
 
     public WebDriver initializeBrowser(Browser browser) throws MalformedURLException {
@@ -69,11 +76,11 @@ public abstract class BaseFunctionalTest {
                 throw new RuntimeException(NOT_IMPLEMENTED_EXCEPTION_MSG);
         }
 
-        return new RemoteWebDriver(new URL(SELENIUM_SERVER_URL), capabilities);
+        return new RemoteWebDriver(new URL(seleniumServerUrl), capabilities);
     }
 
     protected void testAddNewProductOK() {
-        driver.get(INVENTARIO_FRONTEND_URL);
+        driver.get(inventarioFrontendUrl);
 
         WebElement addProductButton = driver.findElement(By.id(BUTTON_OPEN_MODAL_ID));
         addProductButton.click();
@@ -116,7 +123,7 @@ public abstract class BaseFunctionalTest {
     }
 
     void testEditProductOK() {
-        driver.get(INVENTARIO_FRONTEND_URL);
+        driver.get(inventarioFrontendUrl);
 
         WebElement editProductButton = driver.findElement(By.xpath(BUTTON_EDIT_PRODUCT_XPATH));
         editProductButton.click();
@@ -163,7 +170,7 @@ public abstract class BaseFunctionalTest {
     }
 
     void testDeleteProductOK() {
-        driver.get(INVENTARIO_FRONTEND_URL);
+        driver.get(inventarioFrontendUrl);
 
         WebElement deleteProductButton = driver.findElement(By.xpath(BUTTON_DELETE_PRODUCT_XPATH));
         deleteProductButton.click();
@@ -209,5 +216,14 @@ public abstract class BaseFunctionalTest {
     @AfterEach
     public void tearDown() {
         driver.quit();
+    }
+
+    private String getProperty(String propertyKey, String defaultValue) {
+        try (FileInputStream stream = new FileInputStream(PROPERTIES_FILE_PATH)) {
+            properties.load(stream);
+            return properties.getProperty(propertyKey, defaultValue);
+        } catch (Exception e) {
+            return defaultValue;
+        }
     }
 }
